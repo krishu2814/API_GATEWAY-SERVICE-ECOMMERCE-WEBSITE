@@ -10,17 +10,21 @@ class UrlService {
             const response = await axios({
                 method: req.method,
                 url: targetUrl,
+                params: req.query,
                 data: req.body,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': req.headers.authorization
+                    'Authorization': req.headers.authorization,
+                    'x-user-id': req.user?._id,// Authentication middleware -> req.user
+                    'x-user-role': req.user?.role,
+                    'x-user-email': req.user?.email
                 },
             });
             // console.log('Received response from service:', response.status);
             return response;
         }
         catch (error) {
-            console.error('Error forwarding request:', error.message);
+            // console.error('Error forwarding request:', error.message);
             if(error.response) {
                 // console.log(error.response.status);
                 // console.log(error.response.data);
