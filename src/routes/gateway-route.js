@@ -9,6 +9,7 @@ const {
   INVENTORY_SERVICE_URL,
   NOTIFICATION_SERVICE_URL,
   REVIEW_SERVICE_URL,
+  AI_SERVICE_URL,
 } = require("../config/serverConfig");
 const Authentication = require("../middleware/url-middleware");
 const {
@@ -91,6 +92,20 @@ router.use(
     return Authentication(req, res, next);
   },
   (req, res) => gatewayController.routeRequest(req, res, REVIEW_SERVICE_URL),
+);
+
+// AI Service routes (100 req/min)
+router.use(
+  "/ai",
+  generalRateLimiter,
+  (req, res, next) => {
+    // Public access for diagnostic endpoints
+    if (req.method === "GET" && (req.path === "/health" || req.path === "/ping")) {
+      return next();
+    }
+    return Authentication(req, res, next);
+  },
+  (req, res) => gatewayController.routeRequest(req, res, AI_SERVICE_URL),
 );
 
 module.exports = router;

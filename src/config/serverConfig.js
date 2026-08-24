@@ -29,5 +29,7 @@ module.exports = {
     process.env.NOTIFICATION_SERVICE_URL || "http://localhost:5015",
   REVIEW_SERVICE_URL:
     process.env.REVIEW_SERVICE_URL || "http://localhost:5017",
+  AI_SERVICE_URL:
+    process.env.AI_SERVICE_URL || "http://localhost:5018",
   REDIS_URL: process.env.REDIS_URL || "redis://localhost:6379",
 };
