@@ -23,8 +23,15 @@ class GatewayController {
         }
       }
 
+      if (req.correlationId) {
+        res.setHeader("X-Correlation-ID", req.correlationId);
+      }
+
       return res.status(response.status).json(response.data);
     } catch (error) {
+      if (req.correlationId) {
+        res.setHeader("X-Correlation-ID", req.correlationId);
+      }
       if (error.response?.headers?.["x-cache"]) {
         res.setHeader("X-Cache", error.response.headers["x-cache"]);
       }

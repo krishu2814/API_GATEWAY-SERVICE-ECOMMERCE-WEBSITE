@@ -17,6 +17,7 @@ class UrlService {
           "x-user-id": req.user?.id || req.user?._id || "",
           "x-user-role": req.user?.role || "",
           "x-user-email": req.user?.email || "",
+          "x-correlation-id": req.correlationId || "",
         },
       });
       // console.log('Received response from service:', response.status);

@@ -5,6 +5,7 @@ const { PORT } = require('./config/serverConfig');
 
 const setUpAndStartServer = async () => {
     app.use(express.json());
+    app.use(require('./middleware/correlation-middleware'));
 
     app.use('/api/v1', require('./routes/gateway-route'));
 
