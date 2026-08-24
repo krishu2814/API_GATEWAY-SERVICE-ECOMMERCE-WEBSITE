@@ -17,7 +17,7 @@ requiredEnvVars.forEach((envVar) => {
 
 module.exports = {
   PORT: process.env.PORT || 5014,
-  SECRET_TOKEN: process.env.SECRET_TOKEN || "krishukumar@2814",
+  SECRET_TOKEN: process.env.SECRET_TOKEN || "ecommerce_jwt_secret_dev_key",
   AUTH_SERVICE_URL: process.env.AUTH_SERVICE_URL,
   PRODUCT_SERVICE_URL: process.env.PRODUCT_SERVICE_URL,
   CART_SERVICE_URL: process.env.CART_SERVICE_URL,
