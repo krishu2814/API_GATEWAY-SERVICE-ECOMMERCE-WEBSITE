@@ -25,5 +25,7 @@ module.exports = {
   PAYMENT_SERVICE_URL: process.env.PAYMENT_SERVICE_URL,
   INVENTORY_SERVICE_URL:
     process.env.INVENTORY_SERVICE_URL || "http://localhost:5016",
+  NOTIFICATION_SERVICE_URL:
+    process.env.NOTIFICATION_SERVICE_URL || "http://localhost:5015",
   REDIS_URL: process.env.REDIS_URL || "redis://localhost:6379",
 };
