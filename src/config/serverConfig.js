@@ -27,5 +27,7 @@ module.exports = {
     process.env.INVENTORY_SERVICE_URL || "http://localhost:5016",
   NOTIFICATION_SERVICE_URL:
     process.env.NOTIFICATION_SERVICE_URL || "http://localhost:5015",
+  REVIEW_SERVICE_URL:
+    process.env.REVIEW_SERVICE_URL || "http://localhost:5017",
   REDIS_URL: process.env.REDIS_URL || "redis://localhost:6379",
 };

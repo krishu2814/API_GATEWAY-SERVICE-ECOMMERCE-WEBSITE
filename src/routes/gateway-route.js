@@ -8,6 +8,7 @@ const {
   ORDER_SERVICE_URL,
   INVENTORY_SERVICE_URL,
   NOTIFICATION_SERVICE_URL,
+  REVIEW_SERVICE_URL,
 } = require("../config/serverConfig");
 const Authentication = require("../middleware/url-middleware");
 const {
@@ -71,6 +72,25 @@ router.use("/inventory", generalRateLimiter, Authentication, (req, res) =>
 // Notification routes (100 req/min)
 router.use("/notifications", generalRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(req, res, NOTIFICATION_SERVICE_URL),
+);
+
+// Coupon routes (100 req/min)
+router.use("/coupons", generalRateLimiter, Authentication, (req, res) =>
+  gatewayController.routeRequest(req, res, ORDER_SERVICE_URL, "/coupons"),
+);
+
+// Review & Rating routes (100 req/min)
+router.use(
+  "/reviews",
+  generalRateLimiter,
+  (req, res, next) => {
+    // Allow public read access to product reviews and rating summaries
+    if (req.method === "GET" && req.path.startsWith("/product/")) {
+      return next();
+    }
+    return Authentication(req, res, next);
+  },
+  (req, res) => gatewayController.routeRequest(req, res, REVIEW_SERVICE_URL),
 );
 
 module.exports = router;
