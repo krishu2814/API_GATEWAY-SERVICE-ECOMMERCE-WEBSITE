@@ -14,10 +14,10 @@ class UrlService {
                 data: req.body,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': req.headers.authorization,
-                    'x-user-id': req.user?._id,// Authentication middleware -> req.user
-                    'x-user-role': req.user?.role,
-                    'x-user-email': req.user?.email
+                    'Authorization': req.headers.authorization || '',
+                    'x-user-id': req.user?.id || req.user?._id || '',
+                    'x-user-role': req.user?.role || '',
+                    'x-user-email': req.user?.email || ''
                 },
             });
             // console.log('Received response from service:', response.status);
