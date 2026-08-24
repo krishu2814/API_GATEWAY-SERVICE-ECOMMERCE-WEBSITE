@@ -9,24 +9,31 @@ const {
   INVENTORY_SERVICE_URL,
 } = require("../config/serverConfig");
 const Authentication = require("../middleware/url-middleware");
+const {
+  authRateLimiter,
+  orderRateLimiter,
+  generalRateLimiter,
+} = require("../middleware/rate-limiter");
 
 const router = express.Router();
 const gatewayController = new GatewayController();
 
 /**
- * Unprotected routes - No authentication required
+ * 1. Auth routes - Strict 15 req/min rate limit against brute-force
  */
-router.use("/auth", (req, res) =>
+router.use("/auth", authRateLimiter, (req, res) =>
   gatewayController.routeRequest(req, res, AUTH_SERVICE_URL),
 );
 
 /**
- * Product routes:
+ * 2. Product routes:
+ * - Rate limited by generalRateLimiter (100 req/min)
  * - GET requests are public for browsing & searching
  * - POST / PATCH / DELETE require Authentication
  */
 router.use(
   "/products",
+  generalRateLimiter,
   (req, res, next) => {
     if (req.method === "GET") {
       return next();
@@ -37,26 +44,31 @@ router.use(
 );
 
 /**
- * Protected routes - Authentication required
+ * 3. Protected routes - Authentication and Tiered Rate Limiting required
  */
 
-router.use("/cart", Authentication, (req, res) =>
+// Cart routes (100 req/min)
+router.use("/cart", generalRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(req, res, CART_SERVICE_URL),
 );
 
-router.use("/orders", Authentication, (req, res) =>
+// Order routes (30 req/min)
+router.use("/orders", orderRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(req, res, ORDER_SERVICE_URL),
 );
 
-router.use("/payment", Authentication, (req, res) =>
+// Payment routes (30 req/min)
+router.use("/payment", orderRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(req, res, PAYMENT_SERVICE_URL),
 );
 
-router.use("/inventory", Authentication, (req, res) =>
+// Inventory routes (100 req/min)
+router.use("/inventory", generalRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(req, res, INVENTORY_SERVICE_URL, "/inventory"),
 );
 
-router.use("/reservations", Authentication, (req, res) =>
+// Reservation routes (100 req/min)
+router.use("/reservations", generalRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(
     req,
     res,

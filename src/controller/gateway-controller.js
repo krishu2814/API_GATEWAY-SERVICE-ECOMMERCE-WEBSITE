@@ -12,8 +12,22 @@ class GatewayController {
         serviceUrl,
         prefix,
       );
+
+      // Forward downstream custom headers (e.g. X-Cache, X-Correlation-ID)
+      if (response.headers) {
+        if (response.headers["x-cache"]) {
+          res.setHeader("X-Cache", response.headers["x-cache"]);
+        }
+        if (response.headers["x-correlation-id"]) {
+          res.setHeader("X-Correlation-ID", response.headers["x-correlation-id"]);
+        }
+      }
+
       return res.status(response.status).json(response.data);
     } catch (error) {
+      if (error.response?.headers?.["x-cache"]) {
+        res.setHeader("X-Cache", error.response.headers["x-cache"]);
+      }
       return res.status(error.response?.status || 500).json(
         error.response?.data || {
           success: false,
