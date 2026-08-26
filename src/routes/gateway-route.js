@@ -60,9 +60,17 @@ router.use("/orders", orderRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(req, res, ORDER_SERVICE_URL),
 );
 
-// Payment routes (30 req/min)
-router.use("/payment", orderRateLimiter, Authentication, (req, res) =>
-  gatewayController.routeRequest(req, res, PAYMENT_SERVICE_URL),
+// Payment routes (30 req/min, public for webhooks & config discovery)
+router.use(
+  "/payment",
+  orderRateLimiter,
+  (req, res, next) => {
+    if (req.path.startsWith("/webhook") || req.path === "/config") {
+      return next();
+    }
+    return Authentication(req, res, next);
+  },
+  (req, res) => gatewayController.routeRequest(req, res, PAYMENT_SERVICE_URL),
 );
 
 // Inventory routes (100 req/min)
