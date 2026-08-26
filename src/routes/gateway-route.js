@@ -70,6 +70,11 @@ router.use("/inventory", generalRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(req, res, INVENTORY_SERVICE_URL, "/inventory"),
 );
 
+// Reservation routes (100 req/min)
+router.use("/reservations", generalRateLimiter, Authentication, (req, res) =>
+  gatewayController.routeRequest(req, res, INVENTORY_SERVICE_URL, "/reservations"),
+);
+
 // Notification routes (100 req/min)
 router.use("/notifications", generalRateLimiter, Authentication, (req, res) =>
   gatewayController.routeRequest(req, res, NOTIFICATION_SERVICE_URL),
