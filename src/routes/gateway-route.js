@@ -112,8 +112,13 @@ router.use(
   "/ai",
   generalRateLimiter,
   (req, res, next) => {
-    // Public access for diagnostic endpoints
-    if (req.method === "GET" && (req.path === "/health" || req.path === "/ping")) {
+    // Public & Guest access for AI Chat assistant and diagnostic endpoints
+    if (
+      req.path.startsWith("/agent/chat") ||
+      req.path.startsWith("/v1/agent/chat") ||
+      req.path === "/health" ||
+      req.path === "/ping"
+    ) {
       return next();
     }
     return Authentication(req, res, next);
