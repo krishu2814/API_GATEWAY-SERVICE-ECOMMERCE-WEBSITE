@@ -3,8 +3,12 @@ const axios = require("axios");
 class UrlService {
   async forwardRequest(req, serviceUrl, prefix = "") {
     try {
-      // console.log(`Forwarding ${req.method} request to ${serviceUrl} and URL:${req.url}`);
-      const targetUrl = `${serviceUrl}/api/v1${prefix}${req.url}`;
+      const cleanUrl = req.url.startsWith("/v1/")
+        ? req.url.replace(/^\/v1/, "")
+        : req.url === "/v1"
+          ? "/"
+          : req.url;
+      const targetUrl = `${serviceUrl}/api/v1${prefix}${cleanUrl}`;
       // console.log('Forwarding request to:', targetUrl);
       const response = await axios({
         method: req.method,
