@@ -74,9 +74,17 @@ router.use(
   (req, res) => gatewayController.routeRequest(req, res, PAYMENT_SERVICE_URL),
 );
 
-// Inventory routes (100 req/min)
-router.use("/inventory", generalRateLimiter, Authentication, (req, res) =>
-  gatewayController.routeRequest(req, res, INVENTORY_SERVICE_URL, "/inventory"),
+// Inventory routes (100 req/min, GET is public for stock availability)
+router.use(
+  "/inventory",
+  generalRateLimiter,
+  (req, res, next) => {
+    if (req.method === "GET") {
+      return next();
+    }
+    return Authentication(req, res, next);
+  },
+  (req, res) => gatewayController.routeRequest(req, res, INVENTORY_SERVICE_URL, "/inventory"),
 );
 
 // Reservation routes (100 req/min)
