@@ -35,10 +35,16 @@ class GatewayController {
       if (error.response?.headers?.["x-cache"]) {
         res.setHeader("X-Cache", error.response.headers["x-cache"]);
       }
-      return res.status(error.response?.status || 500).json(
+      const status = error.response?.status || (error.code === "ECONNREFUSED" ? 503 : 502);
+      const message = error.response?.data?.message || error.message || "API Gateway routing failure";
+      return res.status(status).json(
         error.response?.data || {
           success: false,
-          message: "API Gateway Error",
+          message,
+          errorCode: error.code || "GATEWAY_ROUTING_ERROR",
+          error: message,
+          err: message,
+          data: {},
         },
       );
     }
