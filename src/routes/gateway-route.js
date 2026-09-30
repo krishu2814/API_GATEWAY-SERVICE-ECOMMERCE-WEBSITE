@@ -10,6 +10,7 @@ const {
   NOTIFICATION_SERVICE_URL,
   REVIEW_SERVICE_URL,
   AI_SERVICE_URL,
+  REFUND_SERVICE_URL,
 } = require("../config/serverConfig");
 const Authentication = require("../middleware/url-middleware");
 const {
@@ -124,6 +125,15 @@ router.use(
     return Authentication(req, res, next);
   },
   (req, res) => gatewayController.routeRequest(req, res, AI_SERVICE_URL),
+);
+
+// Return & Refund RMA routes (100 req/min)
+router.use("/returns", generalRateLimiter, Authentication, (req, res) =>
+  gatewayController.routeRequest(req, res, REFUND_SERVICE_URL),
+);
+
+router.use("/refunds", generalRateLimiter, Authentication, (req, res) =>
+  gatewayController.routeRequest(req, res, REFUND_SERVICE_URL),
 );
 
 module.exports = router;

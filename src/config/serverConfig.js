@@ -31,5 +31,7 @@ module.exports = {
     process.env.REVIEW_SERVICE_URL || "http://localhost:5017",
   AI_SERVICE_URL:
     process.env.AI_SERVICE_URL || "http://localhost:5018",
+  REFUND_SERVICE_URL:
+    process.env.REFUND_SERVICE_URL || "http://localhost:5019",
   REDIS_URL: process.env.REDIS_URL || "redis://localhost:6379",
 };
